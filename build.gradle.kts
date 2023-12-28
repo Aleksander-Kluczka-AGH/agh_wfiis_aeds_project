@@ -11,7 +11,7 @@ plugins {
 }
 
 allprojects {
-    group = "pl.allegro.agh"
+    group = "allegro-hotel-room-reservations"
     version = "0.0.1-SNAPSHOT"
 
     apply(plugin = "java")
