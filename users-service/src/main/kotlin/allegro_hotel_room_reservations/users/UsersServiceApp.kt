@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-class UserServiceApp
+class UsersServiceApp
 
 fun main(args: Array<String>) {
     createSpringApplication().run(*args)
 }
 
-fun createSpringApplication() = SpringApplication(UserServiceApp::class.java)
+fun createSpringApplication() = SpringApplication(UsersServiceApp::class.java)
