@@ -1,10 +1,10 @@
 db.createUser({
-    "user": "users_local",
-    "pwd": "users_local",
+    "user": "reservations_local",
+    "pwd": "reservations_local",
     "roles": [
         {
             "role": "readWrite",
-            "db": "users_local"
+            "db": "reservations_local"
         }
     ]
 });

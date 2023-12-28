@@ -10,7 +10,7 @@ COPY ./ /src
 RUN apt update
 RUN apt install -y unzip
 RUN rm -rf /var/lib/apt/lists/*
-RUN gradle clean build
+RUN gradle --no-daemon clean build
 RUN unzip ./build/libs/users-service.jar -d /app
 
 # RUN

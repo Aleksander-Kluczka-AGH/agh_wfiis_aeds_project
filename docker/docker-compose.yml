@@ -49,16 +49,27 @@ services:
 
   users_service:
     container_name: users_service
-#    depends_on:
-#      - users_mongo
+    depends_on:
+      - users_postgres
     build:
       context: ../users-service
       dockerfile: Dockerfile
     environment:
+      - SPRING_DATA_POSTGRESDB_URI=postgresql://postgres:postgres@users_postgres:5432/postgres
       - USERS_SERVICE_HOST=http://users-service:8100
       - SECURITY_ENABLED=false
     ports:
       - "8100:8080"
+    networks:
+      - spring-cloud-network
+
+  users_postgres:
+    container_name: users_postgresdb
+    image: postgres:16.1
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
     networks:
       - spring-cloud-network
 
