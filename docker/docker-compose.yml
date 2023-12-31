@@ -101,6 +101,22 @@ services:
     networks:
       - spring-cloud-network
 
+  information_service:
+    container_name: information_service
+    depends_on:
+      - reservations_mongo
+    build:
+      context: ../information-service
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://reservations_local:reservations_local@reservations_mongo:27017/reservations_local
+      - INFORMATION_SERVICE_HOST=http://reservations-service:8102
+      - SECURITY_ENABLED=false
+    ports:
+      - "8102:8080"
+    networks:
+      - spring-cloud-network
+
 #  resources-service:
 #    build:
 #      context: ../resources-service
