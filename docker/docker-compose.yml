@@ -73,7 +73,24 @@ services:
     volumes:
       - ./provisioning/:/docker-entrypoint-initdb.d/
     networks:
-      - spring-cloud-network
+      spring-cloud-network:
+      static-network:
+        ipv4_address: 172.20.128.1
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    depends_on:
+      - users_postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "5050:80"
+    volumes:
+      - ./config/pgadmin/servers.json:/pgadmin4/servers.json
+    networks:
+      - static-network
 
   reservations_service:
     container_name: reservations_service
@@ -218,6 +235,10 @@ services:
 networks:
   spring-cloud-network:
     driver: bridge
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
 #volumes:
 #  elasticsearch:
