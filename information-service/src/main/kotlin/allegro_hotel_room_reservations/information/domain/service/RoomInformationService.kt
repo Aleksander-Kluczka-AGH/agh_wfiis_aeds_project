@@ -4,13 +4,27 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class RoomService @Autowired constructor(private val roomInformationRepository: RoomInformationRepository) {
+class RoomInformationService @Autowired constructor(private val roomInformationRepository: RoomInformationRepository) {
 
-    fun updateRoomById(id: Long, updatedRoom: Room): Room? {
+    fun getAllRooms(): List<Room> = roomInformationRepository.findAll()
+
+    fun getRoomById(id: Long): Room = roomInformationRepository.findById(id).orElse(null)
+
+    fun updateRoom(id: Long, updatedRoom: Room): Room? {
         if (roomInformationRepository.existsById(id)) {
             updatedRoom.id = id
             return roomInformationRepository.save(updatedRoom)
         }
         return null
+    }
+
+    fun addRoom(newRoom: Room): Room = roomInformationRepository.save(newRoom)
+
+    fun deleteRoom(id: Long): Boolean {
+        if (roomInformationRepository.existsById(id)) {
+            roomInformationRepository.deleteById(id)
+            return true
+        }
+        return false
     }
 }
