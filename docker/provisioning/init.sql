@@ -1,4 +1,4 @@
-CREATE TABLE users
+CREATE TABLE client
 (
     id      SERIAL PRIMARY KEY,
     name    VARCHAR(30),
@@ -7,4 +7,4 @@ CREATE TABLE users
     role    VARCHAR(30)
 );
 
-INSERT INTO users (name, surname, email, role) VALUES ('admin', 'admin', 'admin@admin.com', 'administrator');
+INSERT INTO client (name, surname, email, role) VALUES ('admin', 'admin', 'admin@admin.com', 'administrator');

@@ -50,7 +50,8 @@ services:
   users_service:
     container_name: users_service
     depends_on:
-      - users_postgres
+      users_postgres:
+        condition: service_healthy
     build:
       context: ../users-service
       dockerfile: Dockerfile
@@ -75,7 +76,12 @@ services:
     networks:
       spring-cloud-network:
       static-network:
-        ipv4_address: 172.20.128.1
+        ipv4_address: 172.39.128.1
+    healthcheck:
+      test: pg_isready -U postgres -d postgres
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   pgadmin:
     container_name: pgadmin
@@ -238,7 +244,7 @@ networks:
   static-network:
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.39.0.0/16
 
 #volumes:
 #  elasticsearch:
