@@ -8,3 +8,17 @@ CREATE TABLE client
 );
 
 INSERT INTO client (name, surname, email, role) VALUES ('admin', 'admin', 'admin@admin.com', 'administrator');
+
+CREATE TABLE reservation
+(
+    id SERIAL PRIMARY KEY,
+    client_id INTEGER,
+    room_id INTEGER,
+    start_date DATE,
+    end_date DATE
+);
+
+ALTER TABLE reservation
+    ADD CONSTRAINT fk_client_id
+        FOREIGN KEY (client_id)
+            REFERENCES client(id);
