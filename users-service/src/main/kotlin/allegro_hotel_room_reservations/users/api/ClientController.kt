@@ -58,4 +58,11 @@ class ClientController{
             return ResponseEntity.notFound().build()
         }
     }
+
+    @PostMapping
+    fun createClient(@RequestBody client: Client): ResponseEntity<Client> {
+        val savedClient = clientRepository!!.save(client)
+        return ResponseEntity(savedClient, HttpStatus.CREATED)
+    }
+
 }

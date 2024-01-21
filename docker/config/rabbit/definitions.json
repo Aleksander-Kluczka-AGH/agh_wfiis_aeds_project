@@ -1,0 +1,59 @@
+{
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "BjgtfGXWERCjUazzSv2nr25JuyB9G5x+9QdQU5o/AdFz16PV",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+        "administrator"
+      ],
+      "limits": {}
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "queues": [
+    {
+      "name": "notification_queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "notification_exchange",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "notification_exchange",
+      "vhost": "/",
+      "destination": "notification_queue",
+      "destination_type": "queue",
+      "routing_key": "notification_routing_key",
+      "arguments": {}
+    }
+  ]
+}

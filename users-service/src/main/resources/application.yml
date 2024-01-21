@@ -9,10 +9,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: 1054728815866-b1saqkk6pvp0ekv5b6o74n4qrvoj106a.apps.googleusercontent.com
-#            client-secret: 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
+  rabbitmq:
+    host: notifications_rabbit
+    port: 5672
+    username: admin
+    password: admin

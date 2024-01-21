@@ -1,0 +1,12 @@
+{
+    "name": "notifications-viewer",
+    "version": "0.0.1",
+    "description": "Display notifications from allegro-hotel-room-reservations application.",
+    "main": "index.js",
+    "author": "",
+    "license": "MIT",
+    "type": "module",
+    "dependencies": {
+        "amqplib": "^0.10.3"
+    }
+}

@@ -24,6 +24,17 @@ password:     admin
 db-password:  postgres
 ```
 
+### RabbitMQ Management
+
+[RabbitMQ](https://www.rabbitmq.com/) message broker has its official management tool integrated into docker image. The tool can be accessed at [localhost:5051](http://localhost:5051).
+
+Credentials:
+
+```
+username: admin
+password: admin
+```
+
 ## Authors
 
 - [Aleksander Kluczka](https://github.com/vis4rd)
