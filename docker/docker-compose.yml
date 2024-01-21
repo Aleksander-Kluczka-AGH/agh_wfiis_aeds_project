@@ -74,9 +74,7 @@ services:
     volumes:
       - ./provisioning/:/docker-entrypoint-initdb.d/
     networks:
-      spring-cloud-network:
-      static-network:
-        ipv4_address: 172.39.128.1
+      - spring-cloud-network
     healthcheck:
       test: pg_isready -U postgres -d postgres
       interval: 5s
@@ -96,7 +94,7 @@ services:
     volumes:
       - ./config/pgadmin/servers.json:/pgadmin4/servers.json
     networks:
-      - static-network
+      - spring-cloud-network
 
   reservations_service:
     container_name: reservations_service
@@ -241,10 +239,3 @@ services:
 networks:
   spring-cloud-network:
     driver: bridge
-  static-network:
-    ipam:
-      config:
-        - subnet: 172.39.0.0/16
-
-#volumes:
-#  elasticsearch:
