@@ -18,6 +18,9 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("org.postgresql:postgresql")
 
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
@@ -28,5 +31,8 @@ repositories {
 tasks {
     bootJar {
         archiveFileName.set("users-service.jar")
+    }
+    named<Test>("test") {
+        useJUnitPlatform()
     }
 }

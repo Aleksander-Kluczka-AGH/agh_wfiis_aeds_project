@@ -10,13 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/users")
-class ClientController{
-    private var clientRepository: ClientRepository? = null
-
-    @Autowired
-    fun constructor(clientRepository: ClientRepository) {
-        this.clientRepository = clientRepository
-    }
+class ClientController @Autowired constructor(private var clientRepository: ClientRepository?) {
 
     @GetMapping("/{clientId}")
     fun getUserById(@PathVariable clientId: Int): ResponseEntity<out Any> {
