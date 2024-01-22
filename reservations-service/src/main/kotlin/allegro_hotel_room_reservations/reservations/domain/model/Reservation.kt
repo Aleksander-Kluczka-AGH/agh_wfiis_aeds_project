@@ -1,17 +1,15 @@
 package allegro_hotel_room_reservations.reservations.domain.model
+import jakarta.persistence.*
 import java.time.LocalDate
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
 
 @Entity
+@Table(name= "reservation")
 data class Reservation(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
-    val userId: Long?,
-    val roomId: Long?,
+    var clientId: Long?,
+    var roomId: Long?,
     var startDate: LocalDate?,
     var endDate: LocalDate?
 ) {
