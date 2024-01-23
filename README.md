@@ -1,5 +1,7 @@
 # allegro-hotel-room-reservations
 
+![Build Status](https://github.com/allegro-agh-2023/gr2_hotel_room_reservation/workflows/ci/badge.svg)
+
 ## Launch
 
 Use docker compose to launch all services:
