@@ -1,8 +1,12 @@
-name: Pull Request Flow
+name: Pull Request
 
 on:
   pull_request:
     branches: [ master ]
+    paths:
+      - '**.kt'
+      - '**.kts'
+      - '**.java'
   workflow_dispatch:
 
 jobs:

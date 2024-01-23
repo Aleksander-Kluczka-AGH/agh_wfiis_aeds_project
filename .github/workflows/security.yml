@@ -23,6 +23,12 @@ jobs:
         with:
           args: --sarif-file-output=snyk.sarif --all-projects
 
+      - name: Debug
+        run: |
+          chmod +rx snyk.sarif
+          ls -la
+          tree .
+
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:
