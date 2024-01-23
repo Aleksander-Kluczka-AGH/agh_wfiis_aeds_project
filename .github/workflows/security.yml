@@ -25,9 +25,9 @@ jobs:
 
       - name: Debug
         run: |
-          chmod +rx snyk.sarif
           ls -la
           tree .
+          chmod +rx snyk.sarif
 
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
