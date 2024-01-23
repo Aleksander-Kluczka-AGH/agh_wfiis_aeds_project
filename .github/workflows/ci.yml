@@ -29,7 +29,7 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Debug CI environment
+      - name: Print CI environment
         run: |
           pwd
           tree .
@@ -38,8 +38,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd ${{ matrix.service }}
-          chmod +x gradlew
-          ./gradlew build --info
+          gradle build --info
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
