@@ -30,7 +30,6 @@ jobs:
       - name: Debug
         run: |
           cat snyk.sarif
-          chmod +x snyk.sarif
 
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
