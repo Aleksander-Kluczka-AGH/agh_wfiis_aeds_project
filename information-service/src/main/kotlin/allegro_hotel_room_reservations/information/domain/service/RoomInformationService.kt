@@ -10,11 +10,13 @@ class RoomInformationService @Autowired constructor(private val roomInformationR
 
     fun getAllRooms(): List<Room> = roomInformationRepository.findAll()
 
-    fun getRoomById(id: String): Room? = roomInformationRepository.findById(ObjectId(id)).orElse(null)
+    fun getRoomByNumber(roomNumber: String): Room? =
+        roomInformationRepository.findByRoomNumber(roomNumber)
 
-    fun updateRoom(id: String, updatedRoom: Room): Room? {
-        if (roomInformationRepository.existsById(ObjectId(id))) {
-            updatedRoom.id = ObjectId(id)
+    fun updateRoom(roomNumber: String, updatedRoom: Room): Room? {
+        val existingRoom = roomInformationRepository.findByRoomNumber(roomNumber)
+        if (existingRoom != null) {
+            updatedRoom.id = existingRoom.id
             return roomInformationRepository.save(updatedRoom)
         }
         return null
@@ -22,9 +24,10 @@ class RoomInformationService @Autowired constructor(private val roomInformationR
 
     fun addRoom(newRoom: Room): Room = roomInformationRepository.save(newRoom)
 
-    fun deleteRoom(id: String): Boolean {
-        if (roomInformationRepository.existsById(ObjectId(id))) {
-            roomInformationRepository.deleteById(ObjectId(id))
+    fun deleteRoom(roomNumber: String): Boolean {
+        val existingRoom = roomInformationRepository.findByRoomNumber(roomNumber)
+        if (existingRoom != null) {
+            roomInformationRepository.deleteById(existingRoom.id)
             return true
         }
         return false

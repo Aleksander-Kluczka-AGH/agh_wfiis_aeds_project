@@ -2,7 +2,6 @@ package allegro_hotel_room_reservations.information.api
 
 import allegro_hotel_room_reservations.information.domain.model.Room
 import allegro_hotel_room_reservations.information.domain.service.RoomInformationService
-import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,10 +18,10 @@ class RoomController @Autowired constructor(private val roomInformationService: 
         return ResponseEntity(rooms, HttpStatus.OK)
     }
 
-    // GET /api/rooms/{roomId}
-    @GetMapping("/{roomId}")
-    fun getRoomById(@PathVariable roomId: String): ResponseEntity<Room> {
-        val room = roomInformationService.getRoomById(roomId)
+    // GET /api/rooms/{roomNumber}
+    @GetMapping("/{roomNumber}")
+    fun getRoomByNumber(@PathVariable roomNumber: String): ResponseEntity<Room> {
+        val room = roomInformationService.getRoomByNumber(roomNumber)
         return if (room != null) {
             ResponseEntity(room, HttpStatus.OK)
         } else {
@@ -30,10 +29,10 @@ class RoomController @Autowired constructor(private val roomInformationService: 
         }
     }
 
-    // PUT /api/rooms/{roomId}
-    @PutMapping("/{roomId}")
-    fun updateRoom(@PathVariable roomId: String, @RequestBody updatedRoom: Room): ResponseEntity<Room> {
-        val room = roomInformationService.updateRoom(roomId, updatedRoom)
+    // PUT /api/rooms/{roomNumber}
+    @PutMapping("/{roomNumber}")
+    fun updateRoom(@PathVariable roomNumber: String, @RequestBody updatedRoom: Room): ResponseEntity<Room> {
+        val room = roomInformationService.updateRoom(roomNumber, updatedRoom)
         return if (room != null) {
             ResponseEntity(room, HttpStatus.OK)
         } else {
@@ -48,10 +47,10 @@ class RoomController @Autowired constructor(private val roomInformationService: 
         return ResponseEntity(room, HttpStatus.CREATED)
     }
 
-    // DELETE /api/rooms/{roomId}
-    @DeleteMapping("/{roomId}")
-    fun deleteRoom(@PathVariable roomId: String): ResponseEntity<Void> {
-        val deleted = roomInformationService.deleteRoom(roomId)
+    // DELETE /api/rooms/{roomNumber}
+    @DeleteMapping("/{roomNumber}")
+    fun deleteRoom(@PathVariable roomNumber: String): ResponseEntity<Void> {
+        val deleted = roomInformationService.deleteRoom(roomNumber)
         return if (deleted) {
             ResponseEntity(HttpStatus.NO_CONTENT)
         } else {
