@@ -33,6 +33,7 @@ jobs:
         run: |
           pwd
           tree .
+          gradle --version
 
       - name: Build with Gradle
         run: |
