@@ -27,7 +27,8 @@ jobs:
         with:
           args: --sarif-file-output=snyk.sarif --all-projects
 
-      - uses: credfeto/action-repo-visibility@v1.2.0
+      - name: Check if the repository is public
+        uses: credfeto/action-repo-visibility@v1.2.0
         id: visibility
 
       - name: Upload result to GitHub Code Scanning
