@@ -11,7 +11,10 @@ on:
 jobs:
   security:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,9 +29,8 @@ jobs:
 
       - name: Debug
         run: |
-          ls -la
-          tree .
-          chmod +rx snyk.sarif
+          cat snyk.sarif
+          chmod +x snyk.sarif
 
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
