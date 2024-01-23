@@ -1,6 +1,6 @@
 # allegro-hotel-room-reservations
 
-![Build Status](https://github.com/allegro-agh-2023/gr2_hotel_room_reservation/workflows/ci/badge.svg)
+![Build Status](https://github.com/allegro-agh-2023/gr2_hotel_room_reservation/workflows/ci.yml/badge.svg)
 
 ## Launch
 
