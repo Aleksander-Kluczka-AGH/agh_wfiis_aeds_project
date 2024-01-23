@@ -36,13 +36,19 @@ jobs:
           tree .
 
       - name: Change directory to ${{ matrix.service }}
-        run: cd ${{ matrix.service }}
+        run: |
+          pwd
+          cd ${{ matrix.service }}
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: |
+          pwd
+          chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build --info
+        run: |
+          pwd
+          ./gradlew build --info
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
