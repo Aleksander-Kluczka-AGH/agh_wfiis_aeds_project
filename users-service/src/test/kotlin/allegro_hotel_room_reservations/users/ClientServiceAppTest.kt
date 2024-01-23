@@ -33,7 +33,7 @@ class UserServiceAppTest {
         sut = ClientController(null)
 
         Assertions.assertThrows(NullPointerException::class.java) {
-            sut.createClient(Client(5, "one", "two", "three", "four"))
+            sut.createClient(Client(5, "1", "2", "3", "4"))
         }
     }
 }
