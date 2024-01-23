@@ -52,13 +52,10 @@ services:
 
   reservations_service:
     container_name: reservations_service
-    depends_on:
-      - reservations_mongo
     build:
       context: ../reservations-service
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://reservations_local:reservations_local@reservations_mongo:27017/reservations_local
       - RESERVATIONS_SERVICE_HOST=http://reservations-service:8101
       - SECURITY_ENABLED=false
     ports:
@@ -66,28 +63,33 @@ services:
     networks:
       - spring-cloud-network
 
-  reservations_mongo:
-    container_name: reservations_mongodb
-    image: mongo:7.0.4
+  information_mongo:
+    image: mongo:6.0
     environment:
-      - MONGO_INITDB_DATABASE=reservations_local
+    - MONGO_INITDB_DATABASE=room_info_db
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - ./provisioning/:/docker-entrypoint-initdb.d/
     networks:
       - spring-cloud-network
+    healthcheck:
+      test: [ "CMD","mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   information_service:
     container_name: information_service
     depends_on:
-      - reservations_mongo
+      information_mongo:
+        condition: service_healthy
     build:
       context: ../information-service
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://reservations_local:reservations_local@reservations_mongo:27017/reservations_local
-      - INFORMATION_SERVICE_HOST=http://reservations-service:8102
+      - SPRING_DATA_MONGODB_URI=mongodb://user:password@information_mongo:27017/room_info_db
       - SECURITY_ENABLED=false
     ports:
       - "8102:8080"
