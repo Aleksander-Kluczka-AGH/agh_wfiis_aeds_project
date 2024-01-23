@@ -1,0 +1,30 @@
+name: Pull Request - Build & Test
+
+on:
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - information-service
+          - reservations-service
+          - users-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.service }} with Gradle
+        uses: ./github/actions/build-app
+        with:
+          target_dir: ${{ matrix.service }}
+
+      - name: Run tests for ${{ matrix.service }}
+        working-directory: ${{ matrix.service }}
+        run: gradle test --info
