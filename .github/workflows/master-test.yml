@@ -8,6 +8,7 @@ on:
       - closed
     paths:
       - '**.kt'
+      - '**.kts'
       - '**.java'
   workflow_dispatch:
 

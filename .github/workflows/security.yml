@@ -1,0 +1,39 @@
+name: Snyk Security Scan
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle-jdk17@master
+        continue-on-error: true # Make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif --all-projects
+
+      - name: Check if the repository is public
+        uses: credfeto/action-repo-visibility@v1.2.0
+        id: visibility
+
+      - name: Upload result to GitHub Code Scanning
+        if: ${{ steps.visibility.outputs.is_public == 'true' }}
+        uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
+        with:
+          sarif_file: snyk.sarif
