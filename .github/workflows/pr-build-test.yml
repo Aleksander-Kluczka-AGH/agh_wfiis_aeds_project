@@ -1,4 +1,4 @@
-name: Pull Request - Build & Test
+name: Pull Request Flow
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_test:
+  build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -15,7 +15,6 @@ jobs:
           - information-service
           - reservations-service
           - users-service
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,6 +23,19 @@ jobs:
         uses: ./.github/actions/build-app
         with:
           target_dir: ${{ matrix.service }}
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - information-service
+          - reservations-service
+          - users-service
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Run tests for ${{ matrix.service }}
         working-directory: ${{ matrix.service }}
