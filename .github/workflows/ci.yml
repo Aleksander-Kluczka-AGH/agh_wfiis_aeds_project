@@ -29,6 +29,12 @@ jobs:
           java-version: '17'
           cache: gradle
 
+      - name: Debug CI environment
+        run: |
+          pwd
+          ls -la
+          tree .
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
