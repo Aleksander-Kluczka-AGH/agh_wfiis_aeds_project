@@ -1,0 +1,33 @@
+name: Master - Test
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+    paths:
+      - '**.kt'
+      - '**.java'
+  workflow_dispatch:
+
+jobs:
+  test:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - information-service
+          - reservations-service
+          - users-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run tests for ${{ matrix.service }}
+        uses: ./.github/actions/test-app
+        with:
+          target_dir: ${{ matrix.service }}
