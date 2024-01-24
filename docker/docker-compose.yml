@@ -1,8 +1,8 @@
 version: "3.8"
 name: allegro_hotel
 services:
-  users_service:
-    container_name: users_service
+  users-service:
+    container_name: users-service
     depends_on:
       users_postgres:
         condition: service_healthy
@@ -80,8 +80,8 @@ services:
       retries: 3
       start_period: 5s
 
-  information_service:
-    container_name: information_service
+  information-service:
+    container_name: information-service
     depends_on:
       information_mongo:
         condition: service_healthy
@@ -90,6 +90,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://user:password@information_mongo:27017/room_info_db
+      - INFORMATION_SERVICE_HOST=http://information-service:8102
       - SECURITY_ENABLED=false
     ports:
       - "8102:8080"
