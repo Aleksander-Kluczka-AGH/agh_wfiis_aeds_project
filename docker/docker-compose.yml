@@ -1,5 +1,4 @@
 version: "3.8"
-name: allegro_hotel
 services:
   clients-service:
     container_name: clients_service
