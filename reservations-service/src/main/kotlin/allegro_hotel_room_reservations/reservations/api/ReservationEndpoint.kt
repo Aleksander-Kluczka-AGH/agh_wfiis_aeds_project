@@ -3,22 +3,36 @@ package allegro_hotel_room_reservations.reservations.api
 import allegro_hotel_room_reservations.reservations.domain.model.Reservation
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRepository
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRequest
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.client.RestTemplate
 import org.springframework.web.reactive.function.client.WebClient
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+
+
 
 @RestController
 @RequestMapping("/api/reservations")
 class ReservationController @Autowired constructor(private val reservationRepository: ReservationRepository) {
 
-    // POST /api/reservations
     @PostMapping
-    suspend fun makeReservation(@RequestBody reservationRequest: ReservationRequest): ResponseEntity<Reservation> {
+    fun makeReservation(@RequestBody reservationRequest: ReservationRequest): ResponseEntity<Reservation> {
+
+        val hasConflict = reservationRepository.hasConflict(
+            roomId = reservationRequest.roomId,
+            startDate = reservationRequest.startDate,
+            endDate = reservationRequest.endDate,
+            excludeReservationId = -1
+        )
+
+        if (hasConflict) {
+            return ResponseEntity(HttpStatus.CONFLICT)
+        }
+
         val reservation = Reservation(
             id = 0,
             clientId = reservationRequest.clientId,
@@ -27,29 +41,39 @@ class ReservationController @Autowired constructor(private val reservationReposi
             endDate = reservationRequest.endDate
         )
 
-        val savedReservation = reservationRepository.save(reservation)
+        val userCheckUrl = "http://users-service:8080/api/users/${reservationRequest.clientId}"
+        try{
+            val userCheckResponse = WebClient.create().get()
+                .uri(userCheckUrl)
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .cast(String::class.java)
+                .block()
 
-        val roomUpdateUrl = "http://localhost:8102/api/rooms/${reservationRequest.roomId}"
-        val updatedRoom = Room(id = reservationRequest.roomId, vacant = false)
-
-        // Create a WebClient instance
-        val webClient = WebClient.builder().build()
-
-        // Make the PUT request using WebClient
-        val response = webClient.put()
-            .uri(roomUpdateUrl)
-            .bodyValue(updatedRoom)
-            .retrieve()
-            .toEntity(Room::class.java)
-            .awaitBodyOrNull()
-
-        // Check if the room update was successful
-        return if (response?.statusCode == HttpStatus.OK) {
-            ResponseEntity(savedReservation, HttpStatus.CREATED)
-        } else {
-            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+            println("userCheckResponse: $userCheckResponse")
         }
-    }
+        catch (e: Exception) {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+
+
+
+        val roomCheckUrl = "http://information-service:8080/api/rooms/${reservationRequest.roomId}"
+        try{
+        val roomCheckResponse = WebClient.create().get()
+            .uri(roomCheckUrl)
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .cast(String::class.java)
+            .block()
+
+        println("roomCheckResponse: $roomCheckResponse")
+        }
+        catch (e: Exception) {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+
+        return ResponseEntity(reservationRepository.save(reservation), HttpStatus.CREATED)
     }
 
     // GET /api/reservations/{reservationId}
@@ -72,6 +96,18 @@ class ReservationController @Autowired constructor(private val reservationReposi
         val existingReservation = reservationRepository.findById(reservationId)
         return if (existingReservation.isPresent) {
             val reservation = existingReservation.get()
+
+            val hasConflict = reservationRepository.hasConflict(
+                roomId = updatedReservation.roomId,
+                startDate = updatedReservation.startDate,
+                endDate = updatedReservation.endDate,
+                excludeReservationId = reservationId
+            )
+
+            if (hasConflict) {
+                return ResponseEntity(HttpStatus.CONFLICT)
+            }
+
             reservation.apply {
                 clientId = updatedReservation.clientId
                 roomId = updatedReservation.roomId
@@ -95,7 +131,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
         }
     }
 
-//    // GET /api/reservations/user/{userId}
+//    // GET /api/reservations/user/{clientId}
     @GetMapping("/user/{clientId}")
     fun getUserReservations(@PathVariable clientId: Long): ResponseEntity<List<Reservation>> {
         val userReservations = reservationRepository.findByClientId(clientId)
@@ -108,4 +144,19 @@ class ReservationController @Autowired constructor(private val reservationReposi
         val allReservations = reservationRepository.findAll()
         return ResponseEntity(allReservations, HttpStatus.OK)
     }
+
+
 }
+
+@Serializable
+data class RoomId(
+    @SerialName("timestamp") val timestamp: Long,
+    @SerialName("date") val date: String
+)
+@Serializable
+data class RoomInfo(
+    @SerialName("id") val id: RoomId,
+    @SerialName("roomNumber") var roomNumber: String,
+    @SerialName("roomType") var roomType: String,
+    @SerialName("vacant") var vacant: Boolean
+)
