@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.client.WebClient
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 
 @RestController
@@ -89,6 +87,23 @@ class ReservationController @Autowired constructor(private val reservationReposi
         @PathVariable reservationId: Long,
         @RequestBody updatedReservation: ReservationRequest
     ): ResponseEntity<Reservation> {
+
+        val clientCheckUrl = "http://clients-service:8080/api/clients/${updatedReservation.clientId}"
+        try{
+            val clientCheckResponse = WebClient.create().get()
+                .uri(clientCheckUrl)
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .cast(String::class.java)
+                .block()
+
+            println("clientCheckResponse: $clientCheckResponse")
+        }
+        catch (e: Exception) {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+
+
         val existingReservation = reservationRepository!!.findById(reservationId)
         return if (existingReservation.isPresent) {
             val reservation = existingReservation.get()
@@ -130,7 +145,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
 //    // GET /api/reservations/client/{clientId}
     @GetMapping("/client/{clientId}")
     fun getClientReservations(@PathVariable clientId: Long): ResponseEntity<List<Reservation>> {
-        val clientReservations = reservationRepository.findByClientId(clientId)
+        val clientReservations = reservationRepository!!.findByClientId(clientId)
         return ResponseEntity(clientReservations, HttpStatus.OK)
     }
 
