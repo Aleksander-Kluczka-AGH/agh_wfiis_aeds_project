@@ -1,12 +1,4 @@
-#spring:
-#  data:
-#    mongodb:
-#      host: reservations_mongodb
-#      port: 27018
-#      database: room_info_db
-#      uri: mongodb://user:password@reservations_mongo:27018/room_info_db
-
 spring:
   data:
     mongodb:
-      uri: "mongodb://user:password@localhost:27017/room_info_db"
+      uri: "mongodb://user:password@information-mongo:27017/room_info_db"
