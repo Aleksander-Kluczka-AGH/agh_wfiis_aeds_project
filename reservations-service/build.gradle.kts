@@ -18,6 +18,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 //    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 //    implementation("io.micrometer:micrometer-registry-prometheus")
 //    implementation("net.logstash.logback:logstash-logback-encoder")
@@ -47,5 +51,8 @@ repositories {
 tasks {
     bootJar {
         archiveFileName.set("reservations-service.jar")
+    }
+    named<Test>("test") {
+        useJUnitPlatform()
     }
 }

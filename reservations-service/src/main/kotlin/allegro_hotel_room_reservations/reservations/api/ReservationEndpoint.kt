@@ -13,12 +13,12 @@ import kotlinx.serialization.Serializable
 
 @RestController
 @RequestMapping("/api/reservations")
-class ReservationController @Autowired constructor(private val reservationRepository: ReservationRepository) {
+class ReservationController @Autowired constructor(private val reservationRepository: ReservationRepository?) {
 
     @PostMapping
     fun makeReservation(@RequestBody reservationRequest: ReservationRequest): ResponseEntity<Reservation> {
 
-        val hasConflict = reservationRepository.hasConflict(
+        val hasConflict = reservationRepository!!.hasConflict(
             roomId = reservationRequest.roomId,
             startDate = reservationRequest.startDate,
             endDate = reservationRequest.endDate,
@@ -75,7 +75,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
     // GET /api/reservations/{reservationId}
     @GetMapping("/{reservationId}")
     fun getReservation(@PathVariable reservationId: Long): ResponseEntity<Reservation> {
-        val reservation = reservationRepository.findById(reservationId).orElse(null)
+        val reservation = reservationRepository!!.findById(reservationId).orElse(null)
         return if (reservation != null) {
             ResponseEntity(reservation, HttpStatus.OK)
         } else {
@@ -89,7 +89,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
         @PathVariable reservationId: Long,
         @RequestBody updatedReservation: ReservationRequest
     ): ResponseEntity<Reservation> {
-        val existingReservation = reservationRepository.findById(reservationId)
+        val existingReservation = reservationRepository!!.findById(reservationId)
         return if (existingReservation.isPresent) {
             val reservation = existingReservation.get()
 
@@ -119,7 +119,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
     // DELETE /api/reservations/{reservationId}
     @DeleteMapping("/{reservationId}")
     fun cancelReservation(@PathVariable reservationId: Long): ResponseEntity<Void> {
-        return if (reservationRepository.existsById(reservationId)) {
+        return if (reservationRepository!!.existsById(reservationId)) {
             reservationRepository.deleteById(reservationId)
             ResponseEntity(HttpStatus.NO_CONTENT)
         } else {
@@ -137,22 +137,9 @@ class ReservationController @Autowired constructor(private val reservationReposi
     // GET /api/reservations
     @GetMapping
     fun getAllReservations(): ResponseEntity<MutableIterable<Reservation>> {
-        val allReservations = reservationRepository.findAll()
+        val allReservations = reservationRepository!!.findAll()
         return ResponseEntity(allReservations, HttpStatus.OK)
     }
 
 
 }
-
-@Serializable
-data class RoomId(
-    @SerialName("timestamp") val timestamp: Long,
-    @SerialName("date") val date: String
-)
-@Serializable
-data class RoomInfo(
-    @SerialName("id") val id: RoomId,
-    @SerialName("roomNumber") var roomNumber: String,
-    @SerialName("roomType") var roomType: String,
-    @SerialName("vacant") var vacant: Boolean
-)
