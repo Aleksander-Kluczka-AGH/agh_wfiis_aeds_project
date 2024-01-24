@@ -3,16 +3,12 @@ package allegro_hotel_room_reservations.reservations.api
 import allegro_hotel_room_reservations.reservations.domain.model.Reservation
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRepository
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRequest
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.client.WebClient
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-
 
 
 @RestController
@@ -41,16 +37,16 @@ class ReservationController @Autowired constructor(private val reservationReposi
             endDate = reservationRequest.endDate
         )
 
-        val userCheckUrl = "http://users-service:8080/api/users/${reservationRequest.clientId}"
+        val clientCheckUrl = "http://clients-service:8080/api/clients/${reservationRequest.clientId}"
         try{
-            val userCheckResponse = WebClient.create().get()
-                .uri(userCheckUrl)
+            val clientCheckResponse = WebClient.create().get()
+                .uri(clientCheckUrl)
                 .retrieve()
                 .bodyToMono(String::class.java)
                 .cast(String::class.java)
                 .block()
 
-            println("userCheckResponse: $userCheckResponse")
+            println("clientCheckResponse: $clientCheckResponse")
         }
         catch (e: Exception) {
             return ResponseEntity(HttpStatus.NOT_FOUND)
@@ -131,11 +127,11 @@ class ReservationController @Autowired constructor(private val reservationReposi
         }
     }
 
-//    // GET /api/reservations/user/{clientId}
-    @GetMapping("/user/{clientId}")
-    fun getUserReservations(@PathVariable clientId: Long): ResponseEntity<List<Reservation>> {
-        val userReservations = reservationRepository.findByClientId(clientId)
-        return ResponseEntity(userReservations, HttpStatus.OK)
+//    // GET /api/reservations/client/{clientId}
+    @GetMapping("/client/{clientId}")
+    fun getClientReservations(@PathVariable clientId: Long): ResponseEntity<List<Reservation>> {
+        val clientReservations = reservationRepository.findByClientId(clientId)
+        return ResponseEntity(clientReservations, HttpStatus.OK)
     }
 
     // GET /api/reservations
