@@ -11,7 +11,7 @@ RUN apt update
 RUN apt install -y unzip
 RUN rm -rf /var/lib/apt/lists/*
 RUN gradle --no-daemon clean build
-RUN unzip ./build/libs/users-service.jar -d /app
+RUN unzip ./build/libs/clients-service.jar -d /app
 
 # RUN
 FROM ${JAVA_IMAGE} as run
@@ -22,4 +22,4 @@ COPY --from=build app/BOOT-INF/classes /app
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","allegro_hotel_room_reservations.users.UsersServiceAppKt"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","allegro_hotel_room_reservations.clients.ClientsServiceAppKt"]

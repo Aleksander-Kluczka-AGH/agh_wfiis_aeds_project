@@ -1,4 +1,4 @@
-package allegro_hotel_room_reservations.users.notification
+package allegro_hotel_room_reservations.clients.notification
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnore

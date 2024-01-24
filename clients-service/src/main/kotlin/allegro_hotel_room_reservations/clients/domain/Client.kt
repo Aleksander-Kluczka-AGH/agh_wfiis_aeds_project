@@ -1,4 +1,4 @@
-package allegro_hotel_room_reservations.users.domain
+package allegro_hotel_room_reservations.clients.domain
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

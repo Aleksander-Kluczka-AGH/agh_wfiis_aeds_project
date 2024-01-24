@@ -22,7 +22,7 @@ jobs:
         service:
           - information-service
           - reservations-service
-          - users-service
+          - clients-service
 
     steps:
       - name: Checkout repository

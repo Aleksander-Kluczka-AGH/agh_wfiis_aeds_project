@@ -1,29 +1,32 @@
-package allegro_hotel_room_reservations.users.api
+package allegro_hotel_room_reservations.clients.api
 
-import allegro_hotel_room_reservations.users.domain.Client
-import allegro_hotel_room_reservations.users.domain.ClientRepository
+import allegro_hotel_room_reservations.clients.domain.Client
+import allegro_hotel_room_reservations.clients.domain.ClientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+//import org.springframework.jmx.export.notification.NotificationPublisher
 import org.springframework.web.bind.annotation.*
 
 
 @RestController
-@RequestMapping("/api/users")
-class ClientController @Autowired constructor(private var clientRepository: ClientRepository?) {
-
+@RequestMapping("/api/clients")
+class ClientController
+@Autowired constructor(
+    private var clientRepository: ClientRepository?,
+) {
     @GetMapping("/{clientId}")
-    fun getUserById(@PathVariable clientId: Int): ResponseEntity<out Any> {
+    fun getClientById(@PathVariable clientId: Int): ResponseEntity<out Any> {
         val client: Client? = clientRepository!!.findById(clientId).orElse(null)
         return if (client != null) {
             ResponseEntity.ok(client)
         } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
         }
     }
 
     @PutMapping("/{clientId}")
-    fun updateUserData(@PathVariable clientId: Int, @RequestBody updatedClient: Client): ResponseEntity<String> {
+    fun updateClientData(@PathVariable clientId: Int, @RequestBody updatedClient: Client): ResponseEntity<String> {
         val existingUser = clientRepository!!.findById(clientId)
 
         if (existingUser.isPresent) {
@@ -35,18 +38,20 @@ class ClientController @Autowired constructor(private var clientRepository: Clie
             clientToUpdate.role = updatedClient.role
 
             clientRepository!!.save(clientToUpdate)
-            return ResponseEntity.ok("User updated successfully")
+//            notificationPublisher.publishNotification("Client $clientId has been updated.")
+            return ResponseEntity.ok("Client updated successfully")
         } else {
             return ResponseEntity.notFound().build()
         }
     }
 
     @DeleteMapping("/{clientId}")
-    fun deleteUser(@PathVariable clientId: Int): ResponseEntity<String> {
+    fun deleteClient(@PathVariable clientId: Int): ResponseEntity<String> {
         val existingUser = clientRepository!!.findById(clientId)
 
         if (existingUser.isPresent) {
             clientRepository!!.deleteById(clientId)
+//            notificationPublisher.publishNotification("Client $clientId has been deleted.")
             return ResponseEntity.ok("User deleted successfully")
         } else {
             return ResponseEntity.notFound().build()

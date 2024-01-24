@@ -1,9 +1,9 @@
 {
   "Servers": {
     "1": {
-      "Name": "users_postgres",
+      "Name": "clients-postgres",
       "Group": "Servers",
-      "Host": "users_postgres",
+      "Host": "clients-postgres",
       "Port": 5432,
       "MaintenanceDB": "postgres",
       "Username": "postgres",
