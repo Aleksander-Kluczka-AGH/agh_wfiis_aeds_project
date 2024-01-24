@@ -8,16 +8,19 @@ import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
+import org.springframework.amqp.support.converter.MessageConverter
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserServiceAppTest {
-
     @Mock
     private lateinit var clientRepositoryMock: ClientRepository
     @InjectMocks
@@ -27,7 +30,7 @@ class UserServiceAppTest {
     fun `Client cannot be found in repository`() {
         sut = ClientController(clientRepositoryMock)
 
-        val response = sut.getUserById(15)
+        val response = sut.getClientById(15)
 
         assert(response.statusCode.is4xxClientError)
     }
@@ -37,7 +40,7 @@ class UserServiceAppTest {
         sut = ClientController(null)
 
         Assertions.assertThrows(NullPointerException::class.java) {
-            sut.getUserById(15)
+            sut.getClientById(15)
         }
     }
 
@@ -47,7 +50,7 @@ class UserServiceAppTest {
         sut = ClientController(clientRepositoryMock)
         `when`(clientRepositoryMock.findById(1)).thenReturn(originalClient)
 
-        val response = sut.getUserById(1)
+        val response = sut.getClientById(1)
 
         assert(response.statusCode.is2xxSuccessful)
     }
@@ -56,7 +59,7 @@ class UserServiceAppTest {
     fun `Non-existent client cannot be updated`() {
         sut = ClientController(clientRepositoryMock)
 
-        val response = sut.updateUserData(1, Client(1, "one", "two", "three", "four"))
+        val response = sut.updateClientData(1, Client(1, "one", "two", "three", "four"))
 
         assert(response.statusCode.is4xxClientError)
     }
@@ -66,7 +69,7 @@ class UserServiceAppTest {
         sut = ClientController(null)
 
         Assertions.assertThrows(NullPointerException::class.java) {
-            sut.updateUserData(1, Client(1, "one", "two", "three", "four"))
+            sut.updateClientData(1, Client(1, "one", "two", "three", "four"))
         }
     }
 
@@ -76,7 +79,7 @@ class UserServiceAppTest {
         sut = ClientController(clientRepositoryMock)
         `when`(clientRepositoryMock.findById(1)).thenReturn(originalClient)
 
-        val response = sut.updateUserData(1, Client(1, "1", "2", "3", "4"))
+        val response = sut.updateClientData(1, Client(1, "1", "2", "3", "4"))
 
         assert(response.statusCode.is2xxSuccessful)
     }
@@ -85,7 +88,7 @@ class UserServiceAppTest {
     fun `Non-existent client cannot be deleted`() {
         sut = ClientController(clientRepositoryMock)
 
-        val response = sut.deleteUser(1)
+        val response = sut.deleteClient(1)
 
         assert(response.statusCode.is4xxClientError)
     }
@@ -95,7 +98,7 @@ class UserServiceAppTest {
         sut = ClientController(null)
 
         Assertions.assertThrows(NullPointerException::class.java) {
-            sut.deleteUser(1)
+            sut.deleteClient(1)
         }
     }
 
@@ -105,7 +108,7 @@ class UserServiceAppTest {
         sut = ClientController(clientRepositoryMock)
         `when`(clientRepositoryMock.findById(1)).thenReturn(originalClient)
 
-        val response = sut.deleteUser(1)
+        val response = sut.deleteClient(1)
 
         assert(response.statusCode.is2xxSuccessful)
     }
