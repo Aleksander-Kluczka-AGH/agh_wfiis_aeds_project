@@ -1,8 +1,8 @@
 package allegro_hotel_room_reservations.reservations.domain.model
 
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Repository

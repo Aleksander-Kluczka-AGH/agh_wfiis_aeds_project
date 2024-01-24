@@ -1,12 +1,12 @@
 package allegro_hotel_room_reservations.reservations.api
 
+import RequestMaker
 import allegro_hotel_room_reservations.reservations.domain.model.Reservation
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRepository
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.reactive.function.client.WebClient
 
 
 @RestController
@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient
 class ReservationController @Autowired constructor(private val reservationRepository: ReservationRepository?) {
 
     @PostMapping
-    fun makeReservation(@RequestBody reservationRequest: ReservationRequest): ResponseEntity<Reservation> {
+    fun makeReservation(@RequestBody reservationRequest: ReservationRequest, requestMaker: RequestMaker): ResponseEntity<Reservation> {
 
         val hasConflict = reservationRepository!!.hasConflict(
             roomId = reservationRequest.roomId,
@@ -35,37 +35,9 @@ class ReservationController @Autowired constructor(private val reservationReposi
             endDate = reservationRequest.endDate
         )
 
-        val clientCheckUrl = "http://clients-service:8080/api/clients/${reservationRequest.clientId}"
-        try{
-            val clientCheckResponse = WebClient.create().get()
-                .uri(clientCheckUrl)
-                .retrieve()
-                .bodyToMono(String::class.java)
-                .cast(String::class.java)
-                .block()
+        val clientCheckResponse = requestMaker.getClientCheckResponse(reservationRequest.clientId)?: return ResponseEntity(HttpStatus.NOT_FOUND)
+        val roomCheckResponse = requestMaker.getRoomCheckResponse(reservationRequest.roomId) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
-            println("clientCheckResponse: $clientCheckResponse")
-        }
-        catch (e: Exception) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
-        }
-
-
-
-        val roomCheckUrl = "http://information-service:8080/api/rooms/${reservationRequest.roomId}"
-        try{
-        val roomCheckResponse = WebClient.create().get()
-            .uri(roomCheckUrl)
-            .retrieve()
-            .bodyToMono(String::class.java)
-            .cast(String::class.java)
-            .block()
-
-        println("roomCheckResponse: $roomCheckResponse")
-        }
-        catch (e: Exception) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
-        }
 
         return ResponseEntity(reservationRepository.save(reservation), HttpStatus.CREATED)
     }
@@ -85,26 +57,11 @@ class ReservationController @Autowired constructor(private val reservationReposi
     @PutMapping("/{reservationId}")
     fun updateReservation(
         @PathVariable reservationId: Long,
-        @RequestBody updatedReservation: ReservationRequest
+        @RequestBody updatedReservation: ReservationRequest, requestMaker: RequestMaker
     ): ResponseEntity<Reservation> {
 
-        val clientCheckUrl = "http://clients-service:8080/api/clients/${updatedReservation.clientId}"
-        try{
-            val clientCheckResponse = WebClient.create().get()
-                .uri(clientCheckUrl)
-                .retrieve()
-                .bodyToMono(String::class.java)
-                .cast(String::class.java)
-                .block()
-
-            println("clientCheckResponse: $clientCheckResponse")
-        }
-        catch (e: Exception) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
-        }
-
-
         val existingReservation = reservationRepository!!.findById(reservationId)
+
         return if (existingReservation.isPresent) {
             val reservation = existingReservation.get()
 
@@ -118,6 +75,8 @@ class ReservationController @Autowired constructor(private val reservationReposi
             if (hasConflict) {
                 return ResponseEntity(HttpStatus.CONFLICT)
             }
+
+            requestMaker.getClientCheckResponse(updatedReservation.clientId) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
             reservation.apply {
                 clientId = updatedReservation.clientId
@@ -155,6 +114,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
         val allReservations = reservationRepository!!.findAll()
         return ResponseEntity(allReservations, HttpStatus.OK)
     }
+
 
 
 }
