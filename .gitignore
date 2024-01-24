@@ -45,3 +45,7 @@ gradlew*
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Persistent database volumes
+volumes/*
+!volumes/.dockerignore

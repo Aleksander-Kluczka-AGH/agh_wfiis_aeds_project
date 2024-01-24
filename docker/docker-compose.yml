@@ -1,5 +1,10 @@
 version: "3.8"
 services:
+  # admin-hack:
+  #   image: ubuntu:latest
+  #   volumes:
+  #     - ~/gr2_hotel_room_reservations/volumes/:/mnt/volumes
+  #   command: chmod 777 -R /mnt/volumes/postgres
   clients-service:
     container_name: clients_service
     depends_on:
@@ -18,9 +23,10 @@ services:
     image: postgres:16.1
     environment:
       - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - ./provisioning/:/docker-entrypoint-initdb.d/
-      - /home/stud2019/9kluczka/gr2_hotel_room_reservations/volumes/postgres:/var/lib/postgresql/data
+      - ./provisioning/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ~/gr2_hotel_room_reservations/volumes/postgres:/var/lib/postgresql/data
     networks:
       - spring-cloud-network
     healthcheck:
@@ -60,7 +66,7 @@ services:
       - MONGO_INITDB_DATABASE=room_info_db
     volumes:
       - ./provisioning/:/docker-entrypoint-initdb.d/
-      - /home/stud2019/9kluczka/gr2_hotel_room_reservations/volumes/mongo:/data/db
+      - ~/gr2_hotel_room_reservations/volumes/mongo:/data/db
     networks:
       - spring-cloud-network
     healthcheck:
