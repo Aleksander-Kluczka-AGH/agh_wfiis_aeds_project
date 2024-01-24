@@ -1,13 +1,13 @@
-package allegro_hotel_room_reservations.users
+package allegro_hotel_room_reservations.clients
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-class UsersServiceApp
+class ClientsServiceApp
 
 fun main(args: Array<String>) {
     createSpringApplication().run(*args)
 }
 
-fun createSpringApplication() = SpringApplication(UsersServiceApp::class.java)
+fun createSpringApplication() = SpringApplication(ClientsServiceApp::class.java)

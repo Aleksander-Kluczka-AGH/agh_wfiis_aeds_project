@@ -1,5 +1,6 @@
-package allegro_hotel_room_reservations.users.notification
+package allegro_hotel_room_reservations.clients.notification
 
+import allegro_hotel_room_reservations.clients.notification.NotificationPublisher
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.amqp.support.converter.MessageConverter

@@ -1,8 +1,8 @@
-package allegro_hotel_room_reservations.users
+package allegro_hotel_room_reservations.clients
 
-import allegro_hotel_room_reservations.users.api.ClientController
-import allegro_hotel_room_reservations.users.domain.Client
-import allegro_hotel_room_reservations.users.domain.ClientRepository
+import allegro_hotel_room_reservations.clients.api.ClientController
+import allegro_hotel_room_reservations.clients.domain.Client
+import allegro_hotel_room_reservations.clients.domain.ClientRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
@@ -20,7 +20,7 @@ import java.util.*
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserServiceAppTest {
+class ClientsServiceAppTest {
     @Mock
     private lateinit var clientRepositoryMock: ClientRepository
     @InjectMocks

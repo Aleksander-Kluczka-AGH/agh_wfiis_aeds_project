@@ -30,7 +30,7 @@ repositories {
 
 tasks {
     bootJar {
-        archiveFileName.set("users-service.jar")
+        archiveFileName.set("clients-service.jar")
     }
     named<Test>("test") {
         useJUnitPlatform()

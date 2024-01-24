@@ -1,7 +1,7 @@
-package allegro_hotel_room_reservations.users.api
+package allegro_hotel_room_reservations.clients.api
 
-import allegro_hotel_room_reservations.users.domain.Client
-import allegro_hotel_room_reservations.users.domain.ClientRepository
+import allegro_hotel_room_reservations.clients.domain.Client
+import allegro_hotel_room_reservations.clients.domain.ClientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/clients")
 class ClientController
 @Autowired constructor(
     private var clientRepository: ClientRepository?,

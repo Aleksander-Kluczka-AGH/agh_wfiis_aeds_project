@@ -1,25 +1,25 @@
 version: "3.8"
 name: allegro_hotel
 services:
-  users-service:
-    container_name: users-service
+  clients-service:
+    container_name: clients-service
     depends_on:
-      users_postgres:
+      clients_postgres:
         condition: service_healthy
     build:
-      context: ../users-service
+      context: ../clients-service
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATA_POSTGRESDB_URI=postgresql://postgres:postgres@users_postgres:5432/postgres
-      - USERS_SERVICE_HOST=http://users-service:8100
+      - SPRING_DATA_POSTGRESDB_URI=postgresql://postgres:postgres@clients_postgres:5432/postgres
+      - CLIENTS_SERVICE_HOST=http://clients-service:8100
       - SECURITY_ENABLED=false
     ports:
       - "8100:8080"
     networks:
       - spring-cloud-network
 
-  users_postgres:
-    container_name: users_postgresdb
+  clients_postgres:
+    container_name: clients_postgresdb
     image: postgres:16.1
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -39,7 +39,7 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
     depends_on:
-      - users_postgres
+      - clients_postgres
     environment:
       PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
       PGADMIN_DEFAULT_PASSWORD: "admin"
