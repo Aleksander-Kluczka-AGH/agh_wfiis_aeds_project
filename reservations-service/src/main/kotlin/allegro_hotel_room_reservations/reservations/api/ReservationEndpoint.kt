@@ -4,14 +4,14 @@ import RequestMaker
 import allegro_hotel_room_reservations.reservations.domain.model.Reservation
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRepository
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRequest
+import allegro_hotel_room_reservations.reservations.notification.NotificationSender
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 
-
 @RestController
 @RequestMapping("/api/reservations")
-class ReservationController @Autowired constructor(private val reservationRepository: ReservationRepository?) {
+class ReservationController @Autowired constructor(private val reservationRepository: ReservationRepository?,  private var notificationSender: NotificationSender) {
 
     @PostMapping
     fun makeReservation(@RequestBody reservationRequest: ReservationRequest, requestMaker: RequestMaker): ResponseEntity<Reservation> {
@@ -38,8 +38,9 @@ class ReservationController @Autowired constructor(private val reservationReposi
         val clientCheckResponse = requestMaker.getClientCheckResponse(reservationRequest.clientId)?: return ResponseEntity(HttpStatus.NOT_FOUND)
         val roomCheckResponse = requestMaker.getRoomCheckResponse(reservationRequest.roomId) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
-
-        return ResponseEntity(reservationRepository.save(reservation), HttpStatus.CREATED)
+        val resp = reservationRepository.save(reservation)
+        notificationSender.sendNotification("Reservation ${resp.id} has been created.")
+        return ResponseEntity(resp, HttpStatus.CREATED)
     }
 
     // GET /api/reservations/{reservationId}
@@ -84,6 +85,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
                 startDate = updatedReservation.startDate
                 endDate = updatedReservation.endDate
             }
+            notificationSender.sendNotification("Reservation ${existingReservation.get().id} has been updated.")
             ResponseEntity(reservationRepository.save(reservation), HttpStatus.OK)
         } else {
             ResponseEntity(HttpStatus.NOT_FOUND)
@@ -95,6 +97,7 @@ class ReservationController @Autowired constructor(private val reservationReposi
     fun cancelReservation(@PathVariable reservationId: Long): ResponseEntity<Void> {
         return if (reservationRepository!!.existsById(reservationId)) {
             reservationRepository.deleteById(reservationId)
+            notificationSender.sendNotification("Reservation $reservationId has been deleted.")
             ResponseEntity(HttpStatus.NO_CONTENT)
         } else {
             ResponseEntity(HttpStatus.NOT_FOUND)

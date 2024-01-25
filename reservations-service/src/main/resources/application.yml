@@ -9,3 +9,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  rabbitmq:
+    host: notifications-rabbit
+    port: 5672
+    username: admin
+    password: admin
+notification:
+  exchange: notification_exchange
+  queue: notification_queue
+  routing-key: notification_routing_key

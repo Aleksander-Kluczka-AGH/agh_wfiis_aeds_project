@@ -5,6 +5,7 @@ import allegro_hotel_room_reservations.reservations.api.ReservationController
 import allegro_hotel_room_reservations.reservations.domain.model.Reservation
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRepository
 import allegro_hotel_room_reservations.reservations.domain.model.ReservationRequest
+import allegro_hotel_room_reservations.reservations.notification.NotificationSender
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -17,7 +18,8 @@ import java.time.LocalDate
 class ReservationControllerTest {
 
     private val reservationRepository: ReservationRepository = mockk()
-    private val controller = ReservationController(reservationRepository)
+    private val notificationSenderMock: NotificationSender = mockk()
+    private val controller = ReservationController(reservationRepository, notificationSenderMock)
     private val requestMaker: RequestMaker = mockk()
 
     private val existingReservation = Reservation(
@@ -60,8 +62,9 @@ class ReservationControllerTest {
 
         every { requestMaker.getClientCheckResponse(reservationRequest.clientId) } returns "Client exists"
         every { requestMaker.getRoomCheckResponse(reservationRequest.roomId) } returns "Room exists"
+        every { notificationSenderMock.sendNotification("Reservation ${reservation.id} has been created.") } returns Unit
 
-        val controller = ReservationController(reservationRepository)
+        val controller = ReservationController(reservationRepository, notificationSenderMock)
 
         // when
         val response: ResponseEntity<Reservation> = controller.makeReservation(reservationRequest, requestMaker)
@@ -147,6 +150,7 @@ class ReservationControllerTest {
                 excludeReservationId = reservationId
             )
         } returns false
+        every { notificationSenderMock.sendNotification("Reservation ${existingReservation.id} has been updated.") } returns Unit
 
         val updatedReservation = existingReservation.copy(
             clientId = updatedReservationRequest.clientId,
@@ -202,6 +206,7 @@ class ReservationControllerTest {
 
         every { reservationRepository.existsById(reservationId) } returns true
         every { reservationRepository.deleteById(reservationId) } returns Unit
+        every { notificationSenderMock.sendNotification("Reservation $reservationId has been deleted.") } returns Unit
 
         // when
         val response: ResponseEntity<Void> = controller.cancelReservation(reservationId)

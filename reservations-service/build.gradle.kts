@@ -16,6 +16,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -27,24 +30,8 @@ dependencies {
     testImplementation(project(mapOf("path" to ":")))
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-//    implementation("io.micrometer:micrometer-registry-prometheus")
-//    implementation("net.logstash.logback:logstash-logback-encoder")
 
     implementation("org.postgresql:postgresql")
-
-//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-//    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-
-//    implementation("com.auth0:java-jwt")
-
-//    testImplementation("org.junit.jupiter:junit-jupiter-api")
-//    testImplementation("io.strikt:strikt-core")
-//    testImplementation("io.mockk:mockk")
-
-//    integTestImplementation("org.springframework.boot:spring-boot-starter-test")
-//    integTestImplementation("org.springframework.security:spring-security-test")
-//    integTestImplementation("org.testcontainers:mongodb")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
