@@ -1,15 +1,28 @@
 package allegro_hotel_room_reservations.clients.notification
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.UUID
+
 
 @Component
 class NotificationSender {
     @Autowired
-    val rabbitTemplate: RabbitTemplate? = null
+    private val rabbitTemplate: AmqpTemplate? = null
+
+    @Value("\${notification.exchange}")
+    private val exchange: String? = null
+
+    @Value("\${notification.routing-key}")
+    private val routingKey: String? = null
 
     fun sendNotification(message: String) {
-        rabbitTemplate!!.convertAndSend("notification_exchange", "notification_routing_key", message)
+        val notification = Notification(message, UUID.randomUUID().toString(), LocalDateTime.now().format(
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+        rabbitTemplate!!.convertAndSend(exchange, routingKey, notification)
     }
 }

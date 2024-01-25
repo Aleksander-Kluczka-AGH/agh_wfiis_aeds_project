@@ -38,7 +38,7 @@ class ClientController
             clientToUpdate.role = updatedClient.role
 
             clientRepository!!.save(clientToUpdate)
-            notificationSender.sendNotification("Client $clientId has been updated")
+            notificationSender.sendNotification("Client $clientId has been updated.")
             return ResponseEntity.ok("Client updated successfully!")
         } else {
             return ResponseEntity.notFound().build()
