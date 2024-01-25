@@ -19,6 +19,8 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:3.12.4")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.mockk:mockk:1.12.0")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 

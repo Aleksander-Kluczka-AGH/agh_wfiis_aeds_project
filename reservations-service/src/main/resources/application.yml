@@ -9,3 +9,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: e63afa5e3b10f7e4652e
+            clientSecret: 2786548bbeb784bea5a8c807dab7cd4d449f1c4b
