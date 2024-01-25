@@ -79,6 +79,7 @@ class RoomControllerTest {
         val newRoom = Room(null, "103", "Standard")
         val savedRoom = Room(ObjectId(), newRoom.roomNumber, newRoom.roomType)
         every { roomInformationRepository.save(newRoom) } returns savedRoom
+        every { roomInformationRepository.findByRoomNumber(newRoom.roomNumber!!) } returns null
 
         val response: ResponseEntity<Room> = controller.addRoom(newRoom)
 
