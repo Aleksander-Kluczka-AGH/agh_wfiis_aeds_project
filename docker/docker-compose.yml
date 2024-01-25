@@ -10,6 +10,8 @@ services:
     depends_on:
       clients-postgres:
         condition: service_healthy
+      notifications-rabbit:
+        condition: service_healthy
     build:
       context: ../clients-service
       dockerfile: Dockerfile

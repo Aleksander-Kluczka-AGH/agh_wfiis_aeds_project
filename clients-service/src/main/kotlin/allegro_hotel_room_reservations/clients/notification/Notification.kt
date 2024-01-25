@@ -1,18 +1,7 @@
 package allegro_hotel_room_reservations.clients.notification
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.LocalDateTime
-
-class Notification @JsonCreator constructor(
-    @JsonProperty var message: String,
-    var id: String?,
-    @JsonIgnore var date: LocalDateTime?
+data class Notification(
+    val message: String,
+    val id: String,
+    val timestamp: String
 )
-{
-    @JsonProperty("date")
-    fun getFormattedDate(): String {
-        return date.toString()
-    }
-}
