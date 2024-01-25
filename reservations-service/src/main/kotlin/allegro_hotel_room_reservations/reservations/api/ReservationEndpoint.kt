@@ -105,6 +105,9 @@ class ReservationController @Autowired constructor(private val reservationReposi
     @GetMapping("/client/{clientId}")
     fun getClientReservations(@PathVariable clientId: Long): ResponseEntity<List<Reservation>> {
         val clientReservations = reservationRepository!!.findByClientId(clientId)
+        if(clientReservations.isEmpty()){
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
         return ResponseEntity(clientReservations, HttpStatus.OK)
     }
 
