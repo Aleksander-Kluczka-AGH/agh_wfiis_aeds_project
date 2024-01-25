@@ -33,15 +33,9 @@ class RoomController @Autowired constructor(private val roomInformationRepositor
     @PutMapping("/{roomNumber}")
     fun updateRoom(@PathVariable roomNumber: String, @RequestBody updatedRoom: Room): ResponseEntity<Room> {
         val existingRoom = roomInformationRepository!!.findByRoomNumber(roomNumber)
-        val room: Room?
-        if (existingRoom != null) {
+        return if (existingRoom != null) {
             updatedRoom.id = existingRoom.id
-            room = roomInformationRepository.save(updatedRoom)
-        }
-        else{
-            room = null
-        }
-        return if (room != null) {
+            val room = roomInformationRepository.save(updatedRoom)
             ResponseEntity(room, HttpStatus.OK)
         } else {
             ResponseEntity(HttpStatus.NOT_FOUND)
@@ -51,15 +45,20 @@ class RoomController @Autowired constructor(private val roomInformationRepositor
     // POST /api/rooms
     @PostMapping
     fun addRoom(@RequestBody newRoom: Room): ResponseEntity<Room> {
-        val room = roomInformationRepository!!.save(newRoom)
-        return ResponseEntity(room, HttpStatus.CREATED)
+        val existingRoom = roomInformationRepository!!.findByRoomNumber(newRoom.roomNumber!!)
+
+        return if (existingRoom == null) {
+            val room = roomInformationRepository.save(newRoom)
+            ResponseEntity(room, HttpStatus.CREATED)
+        } else {
+            ResponseEntity(HttpStatus.CONFLICT)
+        }
     }
 
     // DELETE /api/rooms/{roomNumber}
     @DeleteMapping("/{roomNumber}")
     fun deleteRoom(@PathVariable roomNumber: String): ResponseEntity<Void> {
         val existingRoom = roomInformationRepository!!.findByRoomNumber(roomNumber)
-
         return if (existingRoom != null) {
             roomInformationRepository.deleteById(existingRoom.id!!)
             ResponseEntity(HttpStatus.NO_CONTENT)
@@ -67,5 +66,4 @@ class RoomController @Autowired constructor(private val roomInformationRepositor
             ResponseEntity(HttpStatus.NOT_FOUND)
         }
     }
-
 }
