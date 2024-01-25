@@ -2,10 +2,10 @@ package allegro_hotel_room_reservations.clients.api
 
 import allegro_hotel_room_reservations.clients.domain.Client
 import allegro_hotel_room_reservations.clients.domain.ClientRepository
+import allegro_hotel_room_reservations.clients.notification.NotificationSender
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-//import org.springframework.jmx.export.notification.NotificationPublisher
 import org.springframework.web.bind.annotation.*
 
 
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/clients")
 class ClientController
 @Autowired constructor(
-    private var clientRepository: ClientRepository?,
+    private var clientRepository: ClientRepository?, private var notificationSender: NotificationSender
 ) {
     @GetMapping("/{clientId}")
     fun getClientById(@PathVariable clientId: Int): ResponseEntity<out Any> {
@@ -38,8 +38,8 @@ class ClientController
             clientToUpdate.role = updatedClient.role
 
             clientRepository!!.save(clientToUpdate)
-//            notificationPublisher.publishNotification("Client $clientId has been updated.")
-            return ResponseEntity.ok("Client updated successfully")
+            notificationSender.sendNotification("Client $clientId has been updated")
+            return ResponseEntity.ok("Client updated successfully!")
         } else {
             return ResponseEntity.notFound().build()
         }
@@ -51,7 +51,7 @@ class ClientController
 
         if (existingUser.isPresent) {
             clientRepository!!.deleteById(clientId)
-//            notificationPublisher.publishNotification("Client $clientId has been deleted.")
+            notificationSender.sendNotification("Client $clientId has been deleted.")
             return ResponseEntity.ok("User deleted successfully")
         } else {
             return ResponseEntity.notFound().build()
