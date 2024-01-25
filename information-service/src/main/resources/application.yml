@@ -2,3 +2,13 @@ spring:
   data:
     mongodb:
       uri: "mongodb://user:password@information-mongo:27017/room_info_db"
+  rabbitmq:
+    host: notifications-rabbit
+    port: 5672
+    username: admin
+    password: admin
+
+notification:
+  exchange: notification_exchange
+  queue: notification_queue
+  routing-key: notification_routing_key

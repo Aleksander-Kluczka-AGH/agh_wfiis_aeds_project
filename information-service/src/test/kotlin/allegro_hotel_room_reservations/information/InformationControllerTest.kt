@@ -2,6 +2,7 @@
 import allegro_hotel_room_reservations.information.api.RoomController
 import allegro_hotel_room_reservations.information.domain.model.Room
 import allegro_hotel_room_reservations.information.domain.model.RoomInformationRepository
+import allegro_hotel_room_reservations.information.notification.NotificationSender
 import io.mockk.every
 import io.mockk.mockk
 import org.bson.types.ObjectId
@@ -12,8 +13,9 @@ import org.springframework.http.ResponseEntity
 class RoomControllerTest {
 
     private val roomInformationRepository: RoomInformationRepository = mockk()
+    private val notificationSenderMock: NotificationSender = mockk()
 
-    private val controller = RoomController(roomInformationRepository)
+    private val controller = RoomController(roomInformationRepository, notificationSenderMock)
 
 
     @Test
@@ -56,6 +58,7 @@ class RoomControllerTest {
         val updatedRoom = Room(existingRoom.id, roomNumber, "Deluxe")
         every { roomInformationRepository.findByRoomNumber(roomNumber) } returns existingRoom
         every { roomInformationRepository.save(updatedRoom) } returns updatedRoom
+        every { notificationSenderMock.sendNotification("Room $roomNumber has been updated.") } returns Unit
 
         val response: ResponseEntity<Room> = controller.updateRoom(roomNumber, updatedRoom)
 
@@ -80,6 +83,7 @@ class RoomControllerTest {
         val savedRoom = Room(ObjectId(), newRoom.roomNumber, newRoom.roomType)
         every { roomInformationRepository.save(newRoom) } returns savedRoom
         every { roomInformationRepository.findByRoomNumber(newRoom.roomNumber!!) } returns null
+        every { notificationSenderMock.sendNotification("Room ${savedRoom.roomNumber} has been created.") } returns Unit
 
         val response: ResponseEntity<Room> = controller.addRoom(newRoom)
 
@@ -93,6 +97,7 @@ class RoomControllerTest {
         val existingRoom = Room(ObjectId(), roomNumber, "Standard")
         every { roomInformationRepository.findByRoomNumber(roomNumber) } returns existingRoom
         every { roomInformationRepository.deleteById(existingRoom.id!!) } returns Unit
+        every { notificationSenderMock.sendNotification("Room ${existingRoom.roomNumber} has been deleted.") } returns Unit
 
         val response: ResponseEntity<Void> = controller.deleteRoom(roomNumber)
 

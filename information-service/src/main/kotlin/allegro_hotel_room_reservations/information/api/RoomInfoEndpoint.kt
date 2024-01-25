@@ -2,6 +2,7 @@ package allegro_hotel_room_reservations.information.api
 
 import allegro_hotel_room_reservations.information.domain.model.Room
 import allegro_hotel_room_reservations.information.domain.model.RoomInformationRepository
+import allegro_hotel_room_reservations.information.notification.NotificationSender
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/rooms")
-class RoomController @Autowired constructor(private val roomInformationRepository: RoomInformationRepository?) {
+class RoomController @Autowired constructor(private val roomInformationRepository: RoomInformationRepository?, private var notificationSender: NotificationSender) {
 
     // GET /api/rooms
     @GetMapping
@@ -36,6 +37,7 @@ class RoomController @Autowired constructor(private val roomInformationRepositor
         return if (existingRoom != null) {
             updatedRoom.id = existingRoom.id
             val room = roomInformationRepository.save(updatedRoom)
+            notificationSender.sendNotification("Room ${updatedRoom.roomNumber} has been updated.")
             ResponseEntity(room, HttpStatus.OK)
         } else {
             ResponseEntity(HttpStatus.NOT_FOUND)
@@ -49,6 +51,7 @@ class RoomController @Autowired constructor(private val roomInformationRepositor
 
         return if (existingRoom == null) {
             val room = roomInformationRepository.save(newRoom)
+            notificationSender.sendNotification("Room ${room.roomNumber} has been created.")
             ResponseEntity(room, HttpStatus.CREATED)
         } else {
             ResponseEntity(HttpStatus.CONFLICT)
@@ -60,6 +63,7 @@ class RoomController @Autowired constructor(private val roomInformationRepositor
     fun deleteRoom(@PathVariable roomNumber: String): ResponseEntity<Void> {
         val existingRoom = roomInformationRepository!!.findByRoomNumber(roomNumber)
         return if (existingRoom != null) {
+            notificationSender.sendNotification("Room ${existingRoom.roomNumber} has been deleted.")
             roomInformationRepository.deleteById(existingRoom.id!!)
             ResponseEntity(HttpStatus.NO_CONTENT)
         } else {
