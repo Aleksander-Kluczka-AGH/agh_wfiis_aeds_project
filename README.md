@@ -1,7 +1,11 @@
-# allegro-hotel-room-reservations
+# Allegro engineering of distributed systems - Project
 
 [![Build](https://github.com/allegro-agh-2023/gr2_hotel_room_reservations/actions/workflows/master-build.yml/badge.svg)](https://github.com/allegro-agh-2023/gr2_hotel_room_reservations/actions/workflows/master-build.yml)
 [![Tests](https://github.com/allegro-agh-2023/gr2_hotel_room_reservations/actions/workflows/master-test.yml/badge.svg)](https://github.com/allegro-agh-2023/gr2_hotel_room_reservations/actions/workflows/master-test.yml)
+
+Project written for Applied Computer Science **Allegro engineering of distributed systems** course at [AGH UST](https://www.agh.edu.pl/en) [WFiIS](https://www.fis.agh.edu.pl/en/).
+
+Semester `9`, year `2023`.
 
 ## Launch
 
